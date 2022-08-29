@@ -1,23 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
-const { default: fetch } = require("cross-fetch");
-const BASE_URL = "https://boo-bot-server.herokuapp.com";
-async function getThemes() {
-  const res = await fetch(`${BASE_URL}/api/v1/themes`, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
-  if (res.ok) {
-    const themes = await res.json();
-    return themes;
-  }
-}
-
+const getThemes = require("./fetch-utils.js");
+// import { getThemes } from "./fetch-utils.js";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -49,12 +34,12 @@ async function activate(context) {
       console.log("daysTillHalloween", daysTillHalloween);
       // Display a message box to the user
       const response = await vscode.window.showInformationMessage(
-        `Welcome to boo!BOT... would like haunted enCounters today? There are ${daysTillHalloween} days until halloween.`,
+        `Welcome to boo!BOT... would like haunted enCounters today? There are ${daysTillHalloween} days until Halloween.`,
         "Spook me!",
         "No, life is spooky enough."
       );
       if (response === "Spook me!") {
-        vscode.window.showInformationMessage("Ok we'll haunt you shortly");
+        vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
       } else if (response === "No, life is spooky enough.") {
         vscode.window.showInformationMessage(
           "Ok, hope you don't have any boos in your code today!"
