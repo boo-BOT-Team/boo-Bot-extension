@@ -1,6 +1,22 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
+const vscode = require("vscode");
+const { default: fetch } = require("cross-fetch");
+const BASE_URL = "https://boo-bot-server.herokuapp.com";
+async function getThemes() {
+  const res = await fetch(`${BASE_URL}/api/v1/themes`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (res.ok) {
+    const themes = await res.json();
+    return themes;
+  }
+}
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -8,36 +24,46 @@ const vscode = require('vscode');
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {
+  // Use the console to output diagnostic information (console.log) and errors (console.error)
+  // This line of code will only be executed once when your extension is activated
+  console.log('Congratulations, your extension "booBOT" is now active!');
+  getThemes().then(console.log);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "booBOT" is now active!');
+  const themes = await getThemes();
+  console.log("themes", themes);
+  // The command has been defined in the package.json file
+  // Now provide the implementation of the command with  registerCommand
+  // The commandId parameter must match the command field in package.json
+  let disposable = vscode.commands.registerCommand(
+    "booBOT.helloWorld",
+    function () {
+      // The code you place here will be executed every time your command is executed
 
-	
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('booBOT.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-		
-		const myName = 'sebastian'
-		const dayOfHalloween = new Date('October 31, 2022 12:00:00').getTime();
-		const today = new Date().getTime();
-		const secondsTillHalloween = dayOfHalloween - today;
-		const daysTillHalloween = Math.floor((secondsTillHalloween / 1000 / 60 / 60 / 24));
-		console.log('daysTillHalloween', daysTillHalloween);
-		// Display a message box to the user
-		vscode.window.showInformationMessage(`Welcome to boo!BOT... would like haunted enCounters today? ${myName} days until halloween ${daysTillHalloween}`, 'Yes', 'no');
-	}); 
+      const dayOfHalloween = new Date("October 31, 2022 12:00:00").getTime();
+      const today = new Date().getTime();
+      const secondsTillHalloween = dayOfHalloween - today;
+      const daysTillHalloween = Math.floor(
+        secondsTillHalloween / 1000 / 60 / 60 / 24
+      );
+      console.log("daysTillHalloween", daysTillHalloween);
+      // Display a message box to the user
+      vscode.window.showInformationMessage(
+        `Welcome to boo!BOT... would like haunted enCounters today? There are ${daysTillHalloween} days until halloween.`,
+        `${themes[0].name}`,
+        `${themes[1].name}`,
+        `${themes[2].name}`
+      );
+    }
+  );
 
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(disposable);
 }
 
 // this method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
-	activate,
-	deactivate
-}
+  activate,
+  deactivate,
+};
