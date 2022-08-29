@@ -37,7 +37,7 @@ async function activate(context) {
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
     "booBOT.helloWorld",
-    function () {
+    async function responseFunction() {
       // The code you place here will be executed every time your command is executed
 
       const dayOfHalloween = new Date("October 31, 2022 12:00:00").getTime();
@@ -48,12 +48,18 @@ async function activate(context) {
       );
       console.log("daysTillHalloween", daysTillHalloween);
       // Display a message box to the user
-      vscode.window.showInformationMessage(
+      const response = await vscode.window.showInformationMessage(
         `Welcome to boo!BOT... would like haunted enCounters today? There are ${daysTillHalloween} days until halloween.`,
-        `${themes[0].name}`,
-        `${themes[1].name}`,
-        `${themes[2].name}`
+        "Spook me!",
+        "No, life is spooky enough."
       );
+      if (response === "Spook me!") {
+        vscode.window.showInformationMessage("Ok we'll haunt you shortly");
+      } else if (response === "No, life is spooky enough.") {
+        vscode.window.showInformationMessage(
+          "Ok, hope you don't have any boos in your code today!"
+        );
+      }
     }
   );
 
