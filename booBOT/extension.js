@@ -1,14 +1,15 @@
 const vscode = require('vscode');
-const getThemes = require('./fetch-utils.js');
+const { getRandomFact } = require('./fetch-utils.js');
+//curlies here?
+// import getHelloWorld from './fetch-utils.js';
 
+// 3,600,000 in an hour
 /**
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-	getThemes().then(console.log);
-
-	const themes = await getThemes();
-	console.log('themes', themes);
+	const facts = await getRandomFact();
+	// console.log('facts', facts);
 
 	function getHalloweenCountdown() {
 		const dayOfHalloween = new Date('October 31, 2022 12:00:00').getTime();
@@ -25,11 +26,11 @@ async function activate(context) {
 		setInterval(async () => {
 			// const themes = await getThemes();
 			vscode.window.showInformationMessage(
-				`BOO! Did I scare you? Here's a spooky fact: template literal goes here. Would you like an extra treat? `,
+				`BOO! Did I scare you? Here's a spooky treat: ${facts.content}. Would you like an extra treat? `,
 				'Take me to the treat!',
 				'No, life is spooky enough.'
 			);
-		}, 60000);
+		}, 20000);
 	}
 
 	let disposable = vscode.commands.registerCommand(
@@ -45,6 +46,8 @@ async function activate(context) {
 			if (response === 'Spook me!') {
 				vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
 				startTimerFunction();
+				// getHelloWorld();
+
 			} else if (response === 'No, life is spooky enough.') {
 				vscode.window.showInformationMessage(
 					"Ok, hope you don't have any boos in your code today!"
