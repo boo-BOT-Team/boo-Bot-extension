@@ -2,6 +2,8 @@
   "name": "booBOT",
   "displayName": "boo!BOT",
   "description": "boo!BOT your haunted enCounter",
+  "icon": "booIcon.png",
+  "publisher": "booatthebot",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.70.0"
