@@ -31,6 +31,20 @@ async function getRandomFact() {
   }
 };
 
+async function getRandomLink() {
+  const res = await fetch(`${BASE_URL}/api/v1/links/random`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  if (res.ok) {
+    const links = await res.json();
+    return links;
+  }
+};
 
-module.exports = { getThemes, getRandomFact };
-//set curlies around, with commas for another function
+
+module.exports = { getThemes, getRandomFact, getRandomLink };

@@ -1,16 +1,11 @@
 const vscode = require('vscode');
-const { getRandomFact } = require('./fetch-utils.js');
-//curlies here?
-// import getHelloWorld from './fetch-utils.js';
+const { getRandomFact, getRandomLink } = require('./fetch-utils.js');
 
-// 3,600,000 in an hour
 /**
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-	const facts = await getRandomFact();
-	// console.log('facts', facts);
-
+	
 	function getHalloweenCountdown() {
 		const dayOfHalloween = new Date('October 31, 2022 12:00:00').getTime();
 		const today = new Date().getTime();
@@ -21,16 +16,22 @@ async function activate(context) {
 		return daysTillHalloween;
 	}
 	const daysTillHalloween = getHalloweenCountdown();
-
+	
 	async function startTimerFunction() {
 		setInterval(async () => {
-			// const themes = await getThemes();
-			vscode.window.showInformationMessage(
-				`BOO! Did I scare you? Here's a spooky treat: ${facts.content}. Would you like an extra treat? `,
+			const facts = await getRandomFact();
+			const links = await getRandomLink();
+			const response = await vscode.window.showInformationMessage(
+				`BOO! Did I scare you? Here's a spooky treat: ${facts.content} Would you like an extra treat? `,
 				'Take me to the treat!',
 				'No, life is spooky enough.'
-			);
-		}, 20000);
+				);
+				if (response === 'Take me to the treat!') {
+					vscode.env.openExternal(vscode.Uri.parse(`${links.url}`));
+			} else if (response === 'No, life is spooky enough.') {
+				vscode.window.showInformationMessage("Ok, see you next haunting...");
+			}
+		}, 10000);
 	}
 
 	let disposable = vscode.commands.registerCommand(
@@ -46,7 +47,6 @@ async function activate(context) {
 			if (response === 'Spook me!') {
 				vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
 				startTimerFunction();
-				// getHelloWorld();
 
 			} else if (response === 'No, life is spooky enough.') {
 				vscode.window.showInformationMessage(
