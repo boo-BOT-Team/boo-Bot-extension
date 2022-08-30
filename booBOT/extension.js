@@ -1,43 +1,64 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const getThemes = require('./fetch-utils.js');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {
+	getThemes().then(console.log);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "booBOT" is now active!');
+	const themes = await getThemes();
+	console.log('themes', themes);
 
-	
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('booBOT.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-		
-		const myName = 'sebastian'
+	function getHalloweenCountdown() {
 		const dayOfHalloween = new Date('October 31, 2022 12:00:00').getTime();
 		const today = new Date().getTime();
 		const secondsTillHalloween = dayOfHalloween - today;
-		const daysTillHalloween = Math.floor((secondsTillHalloween / 1000 / 60 / 60 / 24));
-		console.log('daysTillHalloween', daysTillHalloween);
-		// Display a message box to the user
-		vscode.window.showInformationMessage(`Welcome to boo!BOT... would like haunted enCounters today? ${myName} days until halloween ${daysTillHalloween}`, 'Yes', 'no');
-	}); 
+		const daysTillHalloween = Math.floor(
+			secondsTillHalloween / 1000 / 60 / 60 / 24
+		);
+		return daysTillHalloween;
+	}
+	const daysTillHalloween = getHalloweenCountdown();
+
+	async function startTimerFunction() {
+		setInterval(async () => {
+			// const themes = await getThemes();
+			vscode.window.showInformationMessage(
+				`BOO! Did I scare you? Here's a spooky fact: template literal goes here. Would you like an extra treat? `,
+				'Take me to the treat!',
+				'No, life is spooky enough.'
+			);
+		}, 60000);
+	}
+
+	let disposable = vscode.commands.registerCommand(
+		'booBOT.helloWorld',
+
+		async function responseFunction() {
+			console.log('daysTillHalloween', daysTillHalloween);
+			const response = await vscode.window.showInformationMessage(
+				`Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. Would you like haunted enCounters today? `,
+				'Spook me!',
+				'No, life is spooky enough.'
+			);
+			if (response === 'Spook me!') {
+				vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
+				startTimerFunction();
+			} else if (response === 'No, life is spooky enough.') {
+				vscode.window.showInformationMessage(
+					"Ok, hope you don't have any boos in your code today!"
+				);
+			}
+		}
+	);
 
 	context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {}
 
 module.exports = {
 	activate,
-	deactivate
-}
+	deactivate,
+};
