@@ -12,24 +12,15 @@ async function activate(context) {
 	getHalloweenCountdown();
 	createStatusBarItem();
 	showStatusBarItem();
-	// createStatusBarItem2();
 
-	// context.subscriptions.push(
-	// 	vscode.window.onDidChangeWindowState(updateStatusBarItem)
-	// );
 
-	// context.subscriptions.push(
-	// 	vscode.window.onDidChangeActiveTextEditor(updateStatusBarItem)
-	// );
-
-	// function testWindowEventListener() {
-	// 	vscode.window.onDidChangeWindowState((e) => {
-	// 		console.log(e);
-	// 		showStatusBarItem();
-
-	// 	});
-	// }
-	// testWindowEventListener();
+	function testWindowEventListener() {
+		vscode.window.onDidChangeWindowState((e) => {
+			console.log(e);
+     updateStatusBarItem();
+		});
+	}
+	testWindowEventListener();
 
 	const daysTillHalloween = getHalloweenCountdown();
 
@@ -82,8 +73,7 @@ async function activate(context) {
 }
 
 function getHalloweenCountdown() {
-	const editor = vscode.window.activeTextEditor;
-	if (editor) {
+
 		let currentYear = new Date().getFullYear();
 		let dayOfHalloween = new Date(
 			`October 31, ${currentYear} 00:00:00`
@@ -105,7 +95,7 @@ function getHalloweenCountdown() {
 
 		return daysTillHalloween;
 	}
-}
+
 
 function createStatusBarItem() {
 	booStatusItem = vscode.window.createStatusBarItem(
@@ -119,23 +109,11 @@ function showStatusBarItem() {
 	booStatusItem.show();
 }
 
-// function createStatusBarItem2() {
-// 	booStatusItem = vscode.window.createStatusBarItem(
-// 		vscode.StatusBarAlignment.Right
-// 	);
-// }
-
 function updateStatusBarItem() {
 	const booCountdown = getHalloweenCountdown();
 	booStatusItem.text = `👻 ${booCountdown} days til Halloween!`;
 	console.log('boo');
 }
-// function updateStatusBarItem2() {
-// 	const booCountdown = getHalloweenCountdown();
-// 	booStatusItem.text = 'testing testing';
-// 	booStatusItem.show();
-// 	console.log('boo');
-// }
 
 function deactivate() {}
 
