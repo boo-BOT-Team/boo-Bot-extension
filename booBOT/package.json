@@ -22,7 +22,17 @@
         "command": "booBOT.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "booBOT",
+      "properties": {
+        "booBOT.timeInterval": {
+          "type": "number",
+          "default": 60,
+          "description": "Edit this to change how often extension alerts. Don't forget to restart your VS Code."
+        }
+      }
+    }
   },
   "scripts": {
     "lint": "eslint .",
