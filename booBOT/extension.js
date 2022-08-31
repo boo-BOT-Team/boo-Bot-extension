@@ -4,42 +4,40 @@ const { getRandomFact, getRandomLink } = require('./fetch-utils.js');
 /**
  * @param {vscode.ExtensionContext} context
  */
+let booStatusItem = vscode.window.createStatusBarItem(
+	vscode.StatusBarAlignment.Right
+);
 
 async function activate(context) {
-	const booStatusItem = vscode.window.createStatusBarItem(
-		vscode.StatusBarAlignment.Right
-	);
-	// context.subscriptions.push(booStatusItem);
+	getHalloweenCountdown();
+	createStatusBarItem();
+	showStatusBarItem();
+	// createStatusBarItem2();
 
-	function getHalloweenCountdown() {
-		let currentYear = new Date().getFullYear();
-		let dayOfHalloween = new Date(
-			`October 31, ${currentYear} 12:00:00`
-		).getTime();
-		const today = new Date().getTime();
-		let secondsTillHalloween = dayOfHalloween - today;
-		if (secondsTillHalloween < 0) {
-			currentYear++;
-			dayOfHalloween = new Date(
-				`October 31, ${currentYear} 12:00:00`
-			).getTime();
-			secondsTillHalloween = dayOfHalloween - today;
-		}
-		const daysTillHalloween = Math.floor(
-			secondsTillHalloween / 1000 / 60 / 60 / 24
-		);
-		console.log('daysTillHalloween', daysTillHalloween);
-		return daysTillHalloween;
-	}
+	// context.subscriptions.push(
+	// 	vscode.window.onDidChangeWindowState(updateStatusBarItem)
+	// );
+
+	// context.subscriptions.push(
+	// 	vscode.window.onDidChangeActiveTextEditor(updateStatusBarItem)
+	// );
+
+	// function testWindowEventListener() {
+	// 	vscode.window.onDidChangeWindowState((e) => {
+	// 		console.log(e);
+	// 		showStatusBarItem();
+
+	// 	});
+	// }
+	// testWindowEventListener();
+
 	const daysTillHalloween = getHalloweenCountdown();
-
-	booStatusItem.text = `👻 ${daysTillHalloween} days til Halloween!`;
-	booStatusItem.show();
 
 	const oneMinute = 1000 * 60;
 	const timeInterval = Number(
 		vscode.workspace.getConfiguration('booBOT').get('timeInterval')
 	);
+
 	const booInterval = oneMinute * timeInterval;
 
 	async function startTimerFunction() {
@@ -82,6 +80,62 @@ async function activate(context) {
 
 	context.subscriptions.push(disposable);
 }
+
+function getHalloweenCountdown() {
+	const editor = vscode.window.activeTextEditor;
+	if (editor) {
+		let currentYear = new Date().getFullYear();
+		let dayOfHalloween = new Date(
+			`October 31, ${currentYear} 00:00:00`
+		).getTime();
+		// const today = new Date('July 7, 2022 23:59:45').getTime();
+		const today = new Date().getTime();
+		let secondsTillHalloween = dayOfHalloween - today;
+		if (secondsTillHalloween < 0) {
+			currentYear++;
+			dayOfHalloween = new Date(
+				`October 31, ${currentYear} 00:00:00`
+			).getTime();
+			secondsTillHalloween = dayOfHalloween - today;
+		}
+		const daysTillHalloween = Math.floor(
+			secondsTillHalloween / 1000 / 60 / 60 / 24
+		);
+		console.log('daysTillHalloween', daysTillHalloween);
+
+		return daysTillHalloween;
+	}
+}
+
+function createStatusBarItem() {
+	booStatusItem = vscode.window.createStatusBarItem(
+		vscode.StatusBarAlignment.Right
+	);
+	updateStatusBarItem();
+}
+
+function showStatusBarItem() {
+	updateStatusBarItem();
+	booStatusItem.show();
+}
+
+// function createStatusBarItem2() {
+// 	booStatusItem = vscode.window.createStatusBarItem(
+// 		vscode.StatusBarAlignment.Right
+// 	);
+// }
+
+function updateStatusBarItem() {
+	const booCountdown = getHalloweenCountdown();
+	booStatusItem.text = `👻 ${booCountdown} days til Halloween!`;
+	console.log('boo');
+}
+// function updateStatusBarItem2() {
+// 	const booCountdown = getHalloweenCountdown();
+// 	booStatusItem.text = 'testing testing';
+// 	booStatusItem.show();
+// 	console.log('boo');
+// }
 
 function deactivate() {}
 
