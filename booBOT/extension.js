@@ -34,26 +34,28 @@ async function activate(context) {
 		}, 10000);
 	}
 
-	let disposable = vscode.commands.registerCommand(
-		'booBOT.helloWorld',
+		console.log('daysTillHalloween', daysTillHalloween);
+		const response = await vscode.window.showInformationMessage(
+			`Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. Would you like haunted enCounters today? `,
+			'Spook me!',
+			'No, life is spooky enough.'
+		);
+		if (response === 'Spook me!') {
+			vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
+			startTimerFunction();
 
-		async function responseFunction() {
-			console.log('daysTillHalloween', daysTillHalloween);
-			const response = await vscode.window.showInformationMessage(
-				`Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. Would you like haunted enCounters today? `,
-				'Spook me!',
-				'No, life is spooky enough.'
+		} else if (response === 'No, life is spooky enough.') {
+			vscode.window.showInformationMessage(
+				"Ok, hope you don't have any boos in your code today!"
 			);
-			if (response === 'Spook me!') {
-				vscode.window.showInformationMessage("Ok, we'll haunt you shortly!");
-				startTimerFunction();
+		
+	}
 
-			} else if (response === 'No, life is spooky enough.') {
-				vscode.window.showInformationMessage(
-					"Ok, hope you don't have any boos in your code today!"
-				);
-			}
+	let disposable = vscode.commands.registerCommand(
+		'booBOT.helloWorld', function() {
+			activate(context);
 		}
+		
 	);
 
 	context.subscriptions.push(disposable);

@@ -2,7 +2,9 @@
   "name": "booBOT",
   "displayName": "boo!BOT",
   "description": "boo!BOT your haunted enCounter",
-  "version": "0.0.1",
+  "icon": "booIcon.png",
+  "publisher": "booatthebot",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -10,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:booBOT.helloWorld"
+    "onCommand:booBOT.helloWorld",
+    "*"
   ],
   "main": "./extension.js",
   "contributes": {
