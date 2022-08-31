@@ -4,14 +4,25 @@ const { getRandomFact, getRandomLink } = require("./fetch-utils.js");
 /**
  * @param {vscode.ExtensionContext} context
  */
+
+
+
 async function activate(context) {
   function getHalloweenCountdown() {
-    const dayOfHalloween = new Date("October 31, 2022 12:00:00").getTime();
+    let currentYear = new Date().getFullYear();
+    let dayOfHalloween = new Date(`October 31, ${currentYear} 12:00:00`).getTime();
     const today = new Date().getTime();
-    const secondsTillHalloween = dayOfHalloween - today;
+    let secondsTillHalloween = dayOfHalloween - today;
+    if(secondsTillHalloween <0){
+      currentYear ++
+      dayOfHalloween = new Date(`October 31, ${currentYear} 12:00:00`).getTime();
+      secondsTillHalloween = dayOfHalloween - today;
+    }
     const daysTillHalloween = Math.floor(
       secondsTillHalloween / 1000 / 60 / 60 / 24
+      
     );
+    console.log('daysTillHalloween', daysTillHalloween)
     return daysTillHalloween;
   }
   const daysTillHalloween = getHalloweenCountdown();
@@ -39,7 +50,6 @@ async function activate(context) {
     }, booInterval);
   }
 
-  console.log("daysTillHalloween", daysTillHalloween);
   const response = await vscode.window.showInformationMessage(
     `Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. Would you like haunted enCounters today? `,
     "Spook me!",
