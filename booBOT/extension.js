@@ -75,6 +75,13 @@ async function activate(context) {
     }
   );
 
+  const booDisposableLink = vscode.commands.registerCommand(
+	"booBOT.getRandomLinkNow",
+	function(){
+		getRandomLinkNow();
+	}
+  );
+
   async function getRandomFactNow() {
 	const facts = await getRandomFact();
 	await vscode.window.showInformationMessage(
@@ -82,7 +89,14 @@ async function activate(context) {
       );
   }
 
-  context.subscriptions.push(disposable, booDisposable);
+  async function getRandomLinkNow() {
+	const links = await getRandomLink();
+	vscode.env.openExternal(vscode.Uri.parse(`${links.url}`));
+  }
+
+  
+
+  context.subscriptions.push(disposable, booDisposable, booDisposableLink);
 }
 
 function getHalloweenCountdown() {
