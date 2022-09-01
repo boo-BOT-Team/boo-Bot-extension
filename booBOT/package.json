@@ -13,6 +13,7 @@
   ],
   "activationEvents": [
     "onCommand:booBOT.helloWorld",
+    "onCommand:booBOT.getRandomFactNow",
     "*"
   ],
   "main": "./extension.js",
@@ -21,6 +22,10 @@
       {
         "command": "booBOT.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "booBOT.getRandomFactNow",
+        "title": "Get Random Fact Now"
       }
     ],
     "configuration": {
@@ -29,7 +34,7 @@
         "booBOT.timeInterval": {
           "type": "number",
           "default": 60,
-          "description": "Edit this to change how often extension alerts. Don't forget to restart your VS Code."
+          "description": "Edit this to change how often, in minutes, the extension alerts. Don't forget to restart your VS Code."
         }
       }
     }
