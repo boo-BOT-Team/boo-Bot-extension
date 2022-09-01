@@ -12,8 +12,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:booBOT.helloWorld",
-    "onCommand:booBOT.getRandomFactNow",
     "*"
   ],
   "main": "./extension.js",
@@ -26,6 +24,10 @@
       {
         "command": "booBOT.getRandomFactNow",
         "title": "Get Random Fact Now"
+      },
+      {
+        "command": "booBOT.getRandomLinkNow",
+        "title": "Get Random Link Now"
       }
     ],
     "configuration": {

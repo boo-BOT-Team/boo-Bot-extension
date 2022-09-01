@@ -1,41 +1,31 @@
 const vscode = require("vscode");
 const { getRandomFact, getRandomLink } = require("./fetch-utils.js");
+const getHalloweenCountdown = require("./halloweenCountdown.js");
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-let booStatusItem = vscode.window.createStatusBarItem(
-  vscode.StatusBarAlignment.Right
-);
 
 async function activate(context) {
-  getHalloweenCountdown();
-  createStatusBarItem();
-  showStatusBarItem();
-
-  function testWindowEventListener() {
-    vscode.window.onDidChangeWindowState((e) => {
-      console.log(e);
-      updateStatusBarItem();
-    });
-  }
-  testWindowEventListener();
-
   const daysTillHalloween = getHalloweenCountdown();
-
   const oneMinute = 1000 * 60;
   const timeInterval = Number(
     vscode.workspace.getConfiguration("booBOT").get("timeInterval")
   );
-
-  const booInterval = oneMinute * timeInterval;
+  
+  getHalloweenCountdown();
+  createStatusBarItem();
+  showStatusBarItem();
+  updateStatusBarOnWindowStateChange();
 
   async function startTimerFunction() {
+    const booInterval = oneMinute * timeInterval;
     setInterval(async () => {
       const facts = await getRandomFact();
       const links = await getRandomLink();
       const response = await vscode.window.showInformationMessage(
-        `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content} Would you like an extra treat? `,
+        `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content} 
+        Would you like an extra treat? `,
         "Take me to the treat!",
         "No, life is spooky enough."
       );
@@ -48,7 +38,8 @@ async function activate(context) {
   }
 
   const response = await vscode.window.showInformationMessage(
-    `Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. Would you like haunted enCounters today? `,
+    `Welcome to boo!BOT. There are ${daysTillHalloween} days until Halloween. 
+    Would you like haunted enCounters today? `,
     "Spook me!",
     "No, life is spooky enough."
   );
@@ -58,50 +49,48 @@ async function activate(context) {
   } else if (response === "No, life is spooky enough.") {
     vscode.window.showInformationMessage(
       "Ok, hope you don't have any boos in your code today!"
-    );
-  }
+      );
+    }
 
-  let disposable = vscode.commands.registerCommand(
+    let disposable = vscode.commands.registerCommand(
     "booBOT.helloWorld",
     function () {
       activate(context);
     }
-  );
+    );
 
-  const booDisposable = vscode.commands.registerCommand(
+    const factCommand = vscode.commands.registerCommand(
     "booBOT.getRandomFactNow",
     function () {
-      showInformationMessage();
+      getRandomFactNow();
     }
-  );
-
-  function showInformationMessage() {
-    vscode.window.showInformationMessage("this is a test");
+    );
+    
+    const linkCommand = vscode.commands.registerCommand(
+      "booBOT.getRandomLinkNow",
+      function(){
+        getRandomLinkNow();
+      }
+      );
+      
+      async function getRandomFactNow() {
+        const facts = await getRandomFact();
+        await vscode.window.showInformationMessage(
+        `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content}`
+        );
   }
 
-  context.subscriptions.push(disposable, booDisposable);
-}
-
-function getHalloweenCountdown() {
-  let currentYear = new Date().getFullYear();
-  let dayOfHalloween = new Date(
-    `October 31, ${currentYear} 00:00:00`
-  ).getTime();
-  // const today = new Date('July 7, 2022 23:59:45').getTime();
-  const today = new Date().getTime();
-  let secondsTillHalloween = dayOfHalloween - today;
-  if (secondsTillHalloween < 0) {
-    currentYear++;
-    dayOfHalloween = new Date(`October 31, ${currentYear} 00:00:00`).getTime();
-    secondsTillHalloween = dayOfHalloween - today;
+  async function getRandomLinkNow() {
+	const links = await getRandomLink();
+	vscode.env.openExternal(vscode.Uri.parse(`${links.url}`));
   }
-  const daysTillHalloween = Math.floor(
-    secondsTillHalloween / 1000 / 60 / 60 / 24
-  );
-  console.log("daysTillHalloween", daysTillHalloween);
 
-  return daysTillHalloween;
+  context.subscriptions.push(disposable, factCommand, linkCommand);
 }
+
+let booStatusItem = vscode.window.createStatusBarItem(
+  vscode.StatusBarAlignment.Right
+);
 
 function createStatusBarItem() {
   booStatusItem = vscode.window.createStatusBarItem(
@@ -119,6 +108,13 @@ function updateStatusBarItem() {
   const booCountdown = getHalloweenCountdown();
   booStatusItem.text = `👻 ${booCountdown} days til Halloween!`;
   console.log("boo");
+}
+
+function updateStatusBarOnWindowStateChange() {
+  vscode.window.onDidChangeWindowState((e) => {
+    console.log(e);
+    updateStatusBarItem();
+  });
 }
 
 function deactivate() {}
