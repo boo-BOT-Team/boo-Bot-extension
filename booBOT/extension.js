@@ -71,12 +71,15 @@ async function activate(context) {
   const booDisposable = vscode.commands.registerCommand(
     "booBOT.getRandomFactNow",
     function () {
-      showInformationMessage();
+      getRandomFactNow();
     }
   );
 
-  function showInformationMessage() {
-    vscode.window.showInformationMessage("this is a test");
+  async function getRandomFactNow() {
+	const facts = await getRandomFact();
+	await vscode.window.showInformationMessage(
+        `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content}`
+      );
   }
 
   context.subscriptions.push(disposable, booDisposable);
