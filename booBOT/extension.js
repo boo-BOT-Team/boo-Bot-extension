@@ -8,17 +8,17 @@ const getHalloweenCountdown = require("./halloweenCountdown.js");
 
 async function activate(context) {
   const daysTillHalloween = getHalloweenCountdown();
-  const oneMinute = 1000 * 60;
-  const timeInterval = Number(
-    vscode.workspace.getConfiguration("booBOT").get("timeInterval")
-  );
   
   getHalloweenCountdown();
   createStatusBarItem();
   showStatusBarItem();
   updateStatusBarOnWindowStateChange();
-
+  
   async function startTimerFunction() {
+    const oneMinute = 1000 * 60;
+    const timeInterval = Number(
+      vscode.workspace.getConfiguration("booBOT").get("timeInterval")
+    );
     const booInterval = oneMinute * timeInterval;
     setInterval(async () => {
       const facts = await getRandomFact();
