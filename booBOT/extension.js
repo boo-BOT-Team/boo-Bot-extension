@@ -8,12 +8,12 @@ const getHalloweenCountdown = require("./halloweenCountdown.js");
 
 async function activate(context) {
   const daysTillHalloween = getHalloweenCountdown();
-  
+
   getHalloweenCountdown();
   createStatusBarItem();
   showStatusBarItem();
   updateStatusBarOnWindowStateChange();
-  
+
   async function startTimerFunction() {
     const oneMinute = 1000 * 60;
     const timeInterval = Number(
@@ -49,40 +49,37 @@ async function activate(context) {
   } else if (response === "No, life is spooky enough.") {
     vscode.window.showInformationMessage(
       "Ok, hope you don't have any boos in your code today!"
-      );
-    }
+    );
+  }
 
-    let disposable = vscode.commands.registerCommand(
+  let disposable = vscode.commands.registerCommand(
     "booBOT.helloWorld",
     function () {
       activate(context);
     }
-    );
+  );
 
-    const factCommand = vscode.commands.registerCommand(
+  // you can just pass the named function rather than wrapping
+  const factCommand = vscode.commands.registerCommand(
     "booBOT.getRandomFactNow",
-    function () {
-      getRandomFactNow();
-    }
+    getRandomFactNow
+  );
+  const linkCommand = vscode.commands.registerCommand(
+    "booBOT.getRandomLinkNow",
+    getRandomLinkNow
+  );
+
+  // maybe think about moving these functions out into a helper / utils file?
+  async function getRandomFactNow() {
+    const facts = await getRandomFact();
+    await vscode.window.showInformationMessage(
+      `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content}`
     );
-    
-    const linkCommand = vscode.commands.registerCommand(
-      "booBOT.getRandomLinkNow",
-      function(){
-        getRandomLinkNow();
-      }
-      );
-      
-      async function getRandomFactNow() {
-        const facts = await getRandomFact();
-        await vscode.window.showInformationMessage(
-        `BOO! ༼ つ ╹ ╹ ༽つ Did I scare you? Here's a spooky treat: ${facts.content}`
-        );
   }
 
   async function getRandomLinkNow() {
-	const links = await getRandomLink();
-	vscode.env.openExternal(vscode.Uri.parse(`${links.url}`));
+    const links = await getRandomLink();
+    vscode.env.openExternal(vscode.Uri.parse(`${links.url}`));
   }
 
   context.subscriptions.push(disposable, factCommand, linkCommand);
