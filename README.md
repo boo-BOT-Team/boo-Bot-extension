@@ -1,5 +1,7 @@
 # boo!BOT - Extension
 
+<em> This extension is still in beta, we are currently working to have our server up and running again soon. Thank you for your patience. </em>
+
 boo!BOT (your haunted enCounter) is a VS Code extension that counts down the days left until Halloween and gives you an option to receive spooky facts and links fetched from the boo!BOT RESTful API server.
 
 ## Features
